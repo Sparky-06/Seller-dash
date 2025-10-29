@@ -3,12 +3,12 @@ import { supabase } from '../lib/supabase';
 import { Package } from 'lucide-react';
 
 interface ListProductFormProps {
-  username: string;
   onProductAdded: () => void;
 }
 
-export default function ListProductForm({ username, onProductAdded }: ListProductFormProps) {
+export default function ListProductForm({ onProductAdded }: ListProductFormProps) {
   const [formData, setFormData] = useState({
+    username: '',
     name: '',
     price: '',
     original_price: '',
@@ -29,7 +29,7 @@ export default function ListProductForm({ username, onProductAdded }: ListProduc
     try {
       const { error: insertError } = await supabase.from('products').insert([
         {
-          username,
+          username: formData.username,
           name: formData.name,
           price: parseFloat(formData.price),
           original_price: parseFloat(formData.original_price),
@@ -43,6 +43,7 @@ export default function ListProductForm({ username, onProductAdded }: ListProduc
 
       setSuccess(true);
       setFormData({
+        username: '',
         name: '',
         price: '',
         original_price: '',
@@ -88,6 +89,22 @@ export default function ListProductForm({ username, onProductAdded }: ListProduc
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              Username *
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Enter your username"
+            />
+          </div>
+
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Product Name *

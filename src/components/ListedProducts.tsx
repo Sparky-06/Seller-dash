@@ -3,18 +3,17 @@ import { supabase, type Product } from '../lib/supabase';
 import { Trash2, Edit2, Package } from 'lucide-react';
 
 interface ListedProductsProps {
-  username: string;
   refreshTrigger: number;
 }
 
-export default function ListedProducts({ username, refreshTrigger }: ListedProductsProps) {
+export default function ListedProducts({ refreshTrigger }: ListedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchProducts();
-  }, [username, refreshTrigger]);
+  }, [refreshTrigger]);
 
   const fetchProducts = async () => {
     try {
@@ -22,7 +21,6 @@ export default function ListedProducts({ username, refreshTrigger }: ListedProdu
       const { data, error: fetchError } = await supabase
         .from('products')
         .select('*')
-        .eq('username', username)
         .order('created_at', { ascending: false });
 
       if (fetchError) throw fetchError;
@@ -108,7 +106,8 @@ export default function ListedProducts({ username, refreshTrigger }: ListedProdu
               </div>
 
               <h3 className="text-lg font-semibold text-gray-900 mb-1">{product.name}</h3>
-              <p className="text-sm text-gray-600 mb-3">{product.brand}</p>
+              <p className="text-sm text-gray-600 mb-1">{product.brand}</p>
+              <p className="text-xs text-gray-500 mb-3">Seller: {product.username}</p>
 
               <div className="flex items-baseline gap-2 mb-4">
                 <span className="text-2xl font-bold text-green-700">${product.price}</span>

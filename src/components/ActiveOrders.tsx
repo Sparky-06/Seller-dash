@@ -2,18 +2,14 @@ import { useEffect, useState } from 'react';
 import { supabase, type Order } from '../lib/supabase';
 import { ShoppingCart, Clock, CheckCircle, XCircle, Package } from 'lucide-react';
 
-interface ActiveOrdersProps {
-  username: string;
-}
-
-export default function ActiveOrders({ username }: ActiveOrdersProps) {
+export default function ActiveOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchOrders();
-  }, [username]);
+  }, []);
 
   const fetchOrders = async () => {
     try {
@@ -21,7 +17,6 @@ export default function ActiveOrders({ username }: ActiveOrdersProps) {
       const { data, error: fetchError } = await supabase
         .from('orders')
         .select('*, products(*)')
-        .eq('seller_username', username)
         .order('created_at', { ascending: false });
 
       if (fetchError) throw fetchError;
